@@ -1,0 +1,47 @@
+server:
+  port: 8091
+  servlet:
+    context-path: /policy
+
+spring:
+  kafka:
+    bootstrap-servers: ${DBKK_CONNECTION:kafka}:9094
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+  cloud:
+    openfeign:
+      client:
+        config:
+          default:
+            connect-timeout: 60000
+            read-timeout: 120000
+          file-service:
+            url: ${FEIGN_FILE:}
+            connect-timeout: 30000
+            read-timeout: 60000
+          user-service:
+            url: ${FEIGN_USER:http://user-service:8082/info}
+            connect-timeout: 30000
+            read-timeout: 60000
+  datasource:
+    url: ${DBMS_CONNECTION:jdbc:mariadb://mariadb:3306/policy_db}
+    driver-class-name: org.mariadb.jdbc.Driver
+    username: ${DBMS_USERNAME:root}
+    password: ${DBMS_PASSWORD:sapassword}
+    hikari:
+      connection-init-sql: "SET NAMES utf8mb4 COLLATE utf8mb4_unicode_ci"
+  jpa:
+    hibernate:
+      ddl-auto: update   # dev nhanh; prod dùng Flyway
+    properties:
+      hibernate:
+        
+        format_sql: true
+    show-sql: true
+
+
+
+fileservice:
+  url: http://file-service:8080
+  internalToken: ${FILE_SERVICE_INTERNAL_TOKEN:super-secret}
