@@ -5,7 +5,7 @@ server:
 
 spring:
   kafka:
-    bootstrap-servers: ${DBKK_CONNECTION:kafka}:9094
+    bootstrap-servers: ${DBKK_CONNECTION:}:9094
     producer:
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
       value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
@@ -21,14 +21,14 @@ spring:
             connect-timeout: 30000
             read-timeout: 60000
           user-service:
-            url: ${FEIGN_USER:http://user-service:8082/info}
+            url: ${FEIGN_USER:}
             connect-timeout: 30000
             read-timeout: 60000
   datasource:
-    url: ${DBMS_CONNECTION:jdbc:mariadb://mariadb:3306/policy_db}
+    url: ${DBMS_CONNECTION:}
     driver-class-name: org.mariadb.jdbc.Driver
-    username: ${DBMS_USERNAME:root}
-    password: ${DBMS_PASSWORD:sapassword}
+    username: ${DBMS_USERNAME:}
+    password: ${DBMS_PASSWORD:}
     hikari:
       connection-init-sql: "SET NAMES utf8mb4 COLLATE utf8mb4_unicode_ci"
   jpa:
@@ -39,9 +39,3 @@ spring:
         
         format_sql: true
     show-sql: true
-
-
-
-fileservice:
-  url: http://file-service:8080
-  internalToken: ${FILE_SERVICE_INTERNAL_TOKEN:super-secret}
