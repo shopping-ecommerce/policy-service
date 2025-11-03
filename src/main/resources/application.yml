@@ -33,7 +33,7 @@ spring:
       connection-init-sql: "SET NAMES utf8mb4 COLLATE utf8mb4_unicode_ci"
   jpa:
     hibernate:
-      ddl-auto: update   # dev nhanh; prod dùng Flyway
+      ddl-auto: update
     properties:
       hibernate:
         
