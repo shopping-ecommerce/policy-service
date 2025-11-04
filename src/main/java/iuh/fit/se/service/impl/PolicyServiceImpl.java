@@ -122,7 +122,8 @@ public class PolicyServiceImpl implements PolicyService {
                 v.getContentMd(),
                 v.getPdfUrl(),
                 v.getPdfSha256(),
-                v.getCommissionPercent()
+                v.getCommissionPercent(),
+                v.getChangeNotes()
         );
     }
 
