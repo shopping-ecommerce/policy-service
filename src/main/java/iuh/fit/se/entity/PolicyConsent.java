@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name="policy_consents",
         indexes = {
-                @Index(name="idx_consent_user", columnList="user_id"),
+                @Index(name="idx_consent_seller", columnList="seller_id"),
                 @Index(name="idx_consent_policy_version", columnList="policy_id, policy_version_id"),
                 @Index(name="idx_consent_time", columnList="consented_at")
         })
@@ -18,8 +18,8 @@ public class PolicyConsent {
     @Id @GeneratedValue(strategy = GenerationType.UUID)
     String id;
 
-    @Column(name="user_id", nullable=false, length=64)
-    String userId;
+    @Column(name="seller_id", nullable=false, length=64)
+    String sellerId;
 
     @Column(name="policy_id", nullable=false, length=36)
     String policyId;

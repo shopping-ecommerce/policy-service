@@ -12,5 +12,6 @@ public record VersionResp(
         String contentMd,
         String pdfUrl,
         String pdfSha256,
-        BigDecimal commissionPercent
+        BigDecimal commissionPercent,
+        String changeNotes
 ) {}
