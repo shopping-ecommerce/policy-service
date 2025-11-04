@@ -2,6 +2,7 @@ package iuh.fit.se.repository.httpclient;
 
 import iuh.fit.se.config.AuthenticationRequestInterceptor;
 import iuh.fit.se.dto.response.ApiResponse;
+import iuh.fit.se.dto.response.SellerResponse;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,4 +19,6 @@ public interface UserClient {
     public ApiResponse<List<String>> getAllSellerEmails();
     @DeleteMapping("/sellers/deleteSeller")
     public ApiResponse<Void> deleteSeller(@RequestParam("sellerId") String sellerId, @RequestParam("reason") String reason);
+    @GetMapping("/sellers/sellerApproved")
+    public ApiResponse<List<SellerResponse>> searchSellerApproved();
 }

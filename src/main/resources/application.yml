@@ -36,6 +36,12 @@ spring:
       ddl-auto: update
     properties:
       hibernate:
-        
         format_sql: true
     show-sql: true
+policy:
+  auto-revoke:
+    days: 30
+    cron: "0 10 2 * * *"
+    enabled: true
+  service-auth:
+    service-token: ${SERVICE_TOKEN:}        # nếu dùng Bearer token
