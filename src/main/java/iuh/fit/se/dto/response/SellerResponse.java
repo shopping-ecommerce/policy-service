@@ -5,6 +5,7 @@ import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Builder
@@ -24,4 +25,9 @@ public class SellerResponse {
     LocalDateTime registrationDate;
     String address;
     SellerStatusEnum status;
+    Integer violationCount;
+    LocalDateTime suspendedAt;
+    LocalDateTime suspensionEndDate;
+    String suspensionReason;
+    List<ViolationRecordSummary> violationHistory = new ArrayList<>();
 }
