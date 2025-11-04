@@ -13,4 +13,5 @@ public interface PolicyWithdrawalRepository extends JpaRepository<PolicyWithdraw
     Optional<PolicyWithdrawal> findTopBySellerIdOrderByRequestedAtDesc(String sellerId);
 
     List<PolicyWithdrawal> findByEffectiveAtLessThanEqual(LocalDateTime at);
+    boolean existsBySellerIdAndRequestedAtAfter(String sellerId, LocalDateTime since);
 }
