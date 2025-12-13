@@ -91,10 +91,13 @@ public class ConsentServiceImpl implements ConsentService {
 
         // Idempotent: nếu đã consent version hiện hành -> trả về luôn
         if (policyConsentRepository.existsBySellerIdAndPolicyVersionId(sellerId, cur.getId())) {
-            var existed = policyConsentRepository
-                    .findTopBySellerIdAndPolicyIdOrderByConsentedAtDesc(sellerId, pol.getId())
-                    .orElseThrow();
-            return map(existed);
+            PolicyConsent existed = policyConsentRepository
+                    .findBySellerIdAndPolicyVersionId(sellerId, cur.getId())
+                    .orElse(null);
+
+            if (existed != null) {
+                return map(existed);
+            }
         }
 
         PolicyConsent c = PolicyConsent.builder()
