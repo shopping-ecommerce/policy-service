@@ -45,19 +45,24 @@ public class ConsentServiceImpl implements ConsentService {
 
     @Override
     public ConsentStatusBySellerResp getSellerTosStatusBySeller(String sellerId) {
-        // validate seller tồn tại
-//        Seller s = sellerRepository.findById(sellerId)
-//                .orElseThrow(() -> new IllegalArgumentException("Seller không tồn tại: " + sellerId));
+        // validate seller tồn tại (nếu cần bật lại)
+//    sellerRepository.findById(sellerId)
+//        .orElseThrow(() -> new IllegalArgumentException("Seller không tồn tại: " + sellerId));
 
         Policy policy = ensureSellerTos();
         PolicyVersion cur = currentEffective(policy.getId());
 
-        var last = policyConsentRepository
+        PolicyConsent last = policyConsentRepository
                 .findTopBySellerIdAndPolicyIdOrderByConsentedAtDesc(sellerId, policy.getId())
                 .orElse(null);
 
-        boolean has = last != null && cur.getId().equals(last.getPolicyVersionId());
-        boolean need = Boolean.TRUE.equals(cur.getRequireReconsent()) && !has;
+        // Seller đã consent đúng version HIỆN TẠI chưa? → Đây là tiêu chí DUY NHẤT
+        boolean hasConsented = last != null
+                && cur.getId().equals(last.getPolicyVersionId());
+
+        // Luôn cần chấp nhận lại nếu chưa ký đúng version hiện tại
+        // (bắt buộc phải đồng ý mỗi khi có version mới)
+        boolean needReconsent = !hasConsented;
 
         return ConsentStatusBySellerResp.builder()
                 .policyId(policy.getId())
@@ -66,11 +71,11 @@ public class ConsentServiceImpl implements ConsentService {
                 .currentStartDate(cur.getStartDate())
                 .currentPdfUrl(cur.getPdfUrl())
                 .commissionPercent(cur.getCommissionPercent())
-                .requireReconsent(cur.getRequireReconsent())
-                .hasConsented(has)
+                .requireReconsent(cur.getRequireReconsent())  // vẫn trả về giá trị thật của version (có thể dùng để hiển thị thông báo)
+                .hasConsented(hasConsented)                  // chính xác: đã ký version hiện tại chưa
                 .lastConsentedAt(last == null ? null : last.getConsentedAt())
                 .lastPolicyVersionId(last == null ? null : last.getPolicyVersionId())
-                .needReconsent(need)
+                .needReconsent(needReconsent)                // luôn true nếu chưa ký version hiện tại
                 .build();
     }
 
@@ -86,10 +91,13 @@ public class ConsentServiceImpl implements ConsentService {
 
         // Idempotent: nếu đã consent version hiện hành -> trả về luôn
         if (policyConsentRepository.existsBySellerIdAndPolicyVersionId(sellerId, cur.getId())) {
-            var existed = policyConsentRepository
-                    .findTopBySellerIdAndPolicyIdOrderByConsentedAtDesc(sellerId, pol.getId())
-                    .orElseThrow();
-            return map(existed);
+            PolicyConsent existed = policyConsentRepository
+                    .findBySellerIdAndPolicyVersionId(sellerId, cur.getId())
+                    .orElse(null);
+
+            if (existed != null) {
+                return map(existed);
+            }
         }
 
         PolicyConsent c = PolicyConsent.builder()

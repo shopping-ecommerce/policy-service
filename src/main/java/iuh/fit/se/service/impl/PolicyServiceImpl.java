@@ -306,6 +306,7 @@ public class PolicyServiceImpl implements PolicyService {
         draft.setPdfSha256(sha);
         draft.setPublishedAt(LocalDateTime.now());
         draft.setUpdatedAt(LocalDateTime.now());
+        draft.setRequireReconsent(Boolean.TRUE);
         policyVersionRepository.save(draft);
 
         // currentVersionId → bản vừa publish
@@ -388,12 +389,10 @@ public class PolicyServiceImpl implements PolicyService {
             }
             draft.setCommissionPercent(cp);
         }
-        if (req.requireReconsent() != null) {
-            draft.setRequireReconsent(req.requireReconsent());
-        }
         if (draft.getCreatedBy() == null) {
             draft.setCreatedBy(createdBy);
         }
+        draft.setRequireReconsent(Boolean.TRUE);
         draft.setUpdatedAt(LocalDateTime.now());
         draft = policyVersionRepository.save(draft);
 

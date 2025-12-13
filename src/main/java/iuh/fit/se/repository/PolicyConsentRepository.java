@@ -9,4 +9,5 @@ import java.util.Optional;
 public interface PolicyConsentRepository extends JpaRepository<PolicyConsent, String> {
     boolean existsBySellerIdAndPolicyVersionId(String sellerId, String policyVersionId);
     Optional<PolicyConsent> findTopBySellerIdAndPolicyIdOrderByConsentedAtDesc(String sellerId, String policyId);
+    Optional<PolicyConsent> findBySellerIdAndPolicyVersionId(String sellerId, String policyVersionId);
 }
